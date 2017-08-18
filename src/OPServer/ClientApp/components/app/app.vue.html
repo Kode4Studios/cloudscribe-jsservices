@@ -1,0 +1,79 @@
+<template>
+    <div id='app-root' class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3">
+                <menu-component />
+            </div>
+            <div class="col-sm-9">
+                <transition name="fade" mode="out-in">
+                    <router-view></router-view>
+                </transition>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script src="./app.ts"></script>
+<style>
+  .fade-enter-active, .fade-enter{
+    -webkit-animation: moveFromRight .25s both ease;
+    animation: moveFromRight .25s both ease;
+  }
+  .fade-leave-to, .fade-leave-active {
+    -webkit-animation: moveToLeft .25s both ease;
+    animation: moveToLeft .25s both ease;
+  }
+  .layout-padding {
+    padding: 1em 4em;
+  }
+  @media screen and (max-width: 600px){
+    .layout-padding {
+      padding: 1.5em .5em;
+    }
+  }
+  .menu-enter-active, .scale-enter{
+    -webkit-animation: moveFromLeftFade .9s ease both;
+    animation: moveFromLeftFade .9s ease both;
+  }
+  .menu-leave-to, .scale-leave-active {
+    -webkit-animation: moveToLeft .9s ease both;
+    animation: moveToLeft .9s ease both;
+  }
+
+  @-webkit-keyframes moveFromLeftFade {
+    from { opacity: 0.3; -webkit-transform: translateX(-100%); }
+  }
+  @keyframes moveFromLeftFade {
+    from { opacity: 0.3; -webkit-transform: translateX(-100%); transform: translateX(-100%); }
+  }
+  @-webkit-keyframes moveToRight {
+    from { }
+    to { -webkit-transform: translateX(100%); }
+  }
+
+  @keyframes cartOut {
+    from {
+      transform: translate(0px, 0px);
+    }
+    to {
+      transform: translate(1200px, 0px);
+      animation-timing-function: ease-out;
+    }
+
+  }
+  @-webkit-keyframes moveToLeft {
+    from { }
+    to { opacity: .5; -webkit-transform: translateX(-100%); }
+  }
+  @keyframes moveToLeft {
+    from { }
+    to { opacity: .5; -webkit-transform: translateX(-100%); transform: translateX(-100%); }
+  }
+
+  @-webkit-keyframes moveFromRight {
+    from { opacity: .7; -webkit-transform: translateX(100%); }
+  }
+  @keyframes moveFromRight {
+    from {opacity: .7; -webkit-transform: translateX(100%); transform: translateX(100%); }
+  }
+</style>
