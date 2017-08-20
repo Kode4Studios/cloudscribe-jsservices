@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 
+
 interface WeatherForecast {
     dateFormatted: string;
     temperatureC: number;
@@ -13,7 +14,8 @@ export default class FetchDataComponent extends Vue {
     forecasts: WeatherForecast[] = [];
 
     mounted() {
-        fetch('/api/SampleData/WeatherForecasts')
+        var route = (Vue as any).getTenantRoute('api/sampledata/weather');
+        fetch(route)
             .then(response => response.json() as Promise<WeatherForecast[]>)
             .then(data => {
                 this.forecasts = data;

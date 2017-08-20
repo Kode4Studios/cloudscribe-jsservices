@@ -1,6 +1,6 @@
 import Vue from 'vue';
 
-const MultiTenantRouterPlugin = {
+const MultiTenantRouting = {
     tenantRouteBase: "/",
     tenantKey: "/",
     install(Vue, opts) {
@@ -35,4 +35,4 @@ const MultiTenantRouterPlugin = {
     }
 };
 
-export default MultiTenantRouterPlugin;
+export default MultiTenantRouting;

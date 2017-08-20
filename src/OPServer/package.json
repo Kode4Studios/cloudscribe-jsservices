@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:vendor": "webpack --config webpack.config.vendor.js --progress",
+    "build:dev": "webpack --config webpack.config.js --watch --progress",
+    "start" : "run-s build:vendor build:dev"
   },
   "author": "",
   "license": "ISC",
@@ -19,6 +22,7 @@
     "file-loader": "^0.9.0",
     "isomorphic-fetch": "^2.2.1",
     "jquery": "^3.1.1",
+    "npm-run-all": "^4.0.2",
     "style-loader": "^0.13.1",
     "typescript": "^2.2.1",
     "url-loader": "^0.5.7",

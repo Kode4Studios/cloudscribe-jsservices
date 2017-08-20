@@ -1,29 +1,14 @@
 import 'bootstrap';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import MultiTenantRouterPlugin from './plugins/multi-tenant-router';
+import MultiTenantRouting from './plugins/multi-tenant-router';
 Vue.use(VueRouter);
-Vue.use(MultiTenantRouterPlugin, {
-    mode: "filepath",
-    appRoot: ["home", "spa"]
+Vue.use(MultiTenantRouting, {
+    mode: "filepath", /* haven't tried or tested dns based tenant identification */
+    appRoot: ["home", "spa"] /* slugs in order that make up the path to your spa page - in this case this maps to the url /home/spa */
 });
 
-const appPath = "/home/spa";
-var appPathIdx = document.location.href.indexOf(appPath);
-var tenantIndx = document.location.href.indexOf("/home");
-
-const tenantPathMatch = /^http[s]?:\/\/.*?\/([a-zA-Z-_]+).*$/;
-let parts = document.location.href.match(tenantPathMatch);   
-
-
-let tenant = "/";
-if (appPathIdx !== tenantIndx
-    || (parts&&parts.length>1&&parts[1]!=="home")) {
-    tenant = "/"+parts[1]+"/";
-}
-
-console.log(tenant);
-
+/* When building any route use the multi-tenant routing function attached to the main Vue object */
 const getRoute = (path:string) => {
     return (Vue as any).getTenantRoute(path);
 };

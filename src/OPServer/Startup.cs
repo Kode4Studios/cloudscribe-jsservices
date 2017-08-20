@@ -74,7 +74,9 @@ namespace OPServer
             services.AddCloudscribeLogging();
             services.AddCloudscribeCore(Configuration);
 
-            services.AddNodeServices();
+
+            // If you need to call nodejs for processing from your server, uncomment this.
+            // services.AddNodeServices();
 
             //var cert = new X509Certificate2(Path.Combine(environment.ContentRootPath, "yourcustomcert.pfx"), "");
             services.AddIdentityServer()
@@ -172,19 +174,22 @@ namespace OPServer
             loggerFactory.AddDebug();
             ConfigureLogging(loggerFactory, serviceProvider, logRepo);
 
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Is Development " + env.IsDevelopment().ToString());
+            Console.ResetColor();
+
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                // app.UseStatusCodePages();
                 app.UseWebpackDevMiddleware(
                     new WebpackDevMiddlewareOptions {
                         HotModuleReplacement = true
                     }
                 );
             }
-            else
-            {
-                app.UseExceptionHandler("/oops/error");
-            }
+                
+            app.UseExceptionHandler("/Error/Default");
+            
 
             app.UseForwardedHeaders();
             app.UseStaticFiles();
@@ -229,30 +234,14 @@ namespace OPServer
                         template: "{sitefolder}/{controller}/{action}/{id?}",
                         defaults: new { controller = "Home", action = "Index" },
                         constraints: new { name = new cloudscribe.Core.Web.Components.SiteFolderRouteConstraint() }
-                        );
-
-                    // routes.MapRoute(
-                    //     name: "apidefault",
-                    //     template: "{sitefolder}/api/{controller}/{*pathInfo}",
-                    //     defaults: new { controller = "Home", action = "Index" },
-                    //     constraints: new { name = new cloudscribe.Core.Web.Components.SiteFolderRouteConstraint() }
-                    //     );                        
-					
-
-                    // Demo SPA
-                    // routes.MapRoute(
-                    //     name: "folderdefault",
-                    //     template: "{sitefolder}/{controller}/spa/{clientRoute}",
-                    //     defaults: new { controller = "Home", action = "Spa" },
-                    //     constraints: new { name = new cloudscribe.Core.Web.Components.SiteFolderRouteConstraint() }
-                    //     );                        
+                        );                    
 
                 }
 
                 routes.MapRoute(
                     name: "errorhandler",
                     template: "oops/error/{statusCode?}",
-                    defaults: new { controller = "Oops", action = "Error" }
+                    defaults: new { controller = "Error", action = "Oops" }
                     );
 
                 routes.MapRoute(
@@ -276,18 +265,21 @@ namespace OPServer
             //// this is not needed here if you are only using separate api endpoints
             //// it is needed in the startup of those separate endpoints
             //// note that with both cookie auth and jwt auth middleware the principal is merged from both the cookie and the jwt token if it is passed
-            //builder.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
-            //{
-            //    Authority = "https://localhost:44399",
-            //    // using the site aliasid as the scope so each tenant has a different scope
-            //    // you can view the aliasid from site settings
-            //    // clients must be configured with the scope to have access to the apis for the tenant
-            //    ApiName = tenant.AliasId,
-            //    //RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
-            //    //AuthenticationScheme = AuthenticationScheme.Application,
+            var addressFeature = (Microsoft.AspNetCore.Hosting.Server.Features.IServerAddressesFeature) 
+                                    builder.ServerFeatures[typeof(Microsoft.AspNetCore.Hosting.Server.Features.IServerAddressesFeature)];
+            var authority = addressFeature.Addresses?.FirstOrDefault();
+            builder.UseIdentityServerAuthentication(new IdentityServerAuthenticationOptions
+            {
+               Authority = authority??"https://localhost:5000",
+               // using the site aliasid as the scope so each tenant has a different scope
+               // you can view the aliasid from site settings
+               // clients must be configured with the scope to have access to the apis for the tenant
+               ApiName = tenant.AliasId,
+               //RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+               //AuthenticationScheme = AuthenticationScheme.Application,
 
-            //    RequireHttpsMetadata = SslIsAvailable
-            //});
+               RequireHttpsMetadata = SslIsAvailable
+            });
 
             return true;
         }
