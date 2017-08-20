@@ -10,6 +10,14 @@ There is a VueJs plugin for routing ajax requests to the correct tenant url (i.e
 
 I have just started playing with Javascript Services and I really like having the ability to edit both the client code and server code while having things like hot reloading for both, as well as being able to run node javascript on the server if I need it for processing or whatever.
 
+** GOTCHA: **
+
+REMEMBER TO SET YOUR ASPNETCORE_ENVIRONMENT TO Development. If your app isn't running in a Development environment, then hot reloading is not enabled.
+
+Powershell: $Env:ASPNETCORE_ENVIRONMENT="Development"
+
+Mac/Linux: export ASPNETCORE_ENVIRONMENT=Development
+
 To Run:
 
 :>cd /<< your workspace root >>/src/OPServer
